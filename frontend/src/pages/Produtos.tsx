@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { Produto } from '../types'
 import { listarProdutos, deletarProduto } from '../services/produtoService'
+import ProdutoForm from '../components/ProdutoForm'
 
 export default function Produtos() {
   const [produtos, setProdutos] = useState<Produto[]>([])
   const [loading, setLoading] = useState(true)
+  const [mostrarForm, setMostrarForm] = useState(false)
+  const [produtoEditando, setProdutoEditando] = useState<Produto | undefined>()
 
   const carregarProdutos = async () => {
     try {
@@ -31,13 +34,38 @@ export default function Produtos() {
     }
   }
 
+  const handleSalvar = () => {
+    setMostrarForm(false)
+    setProdutoEditando(undefined)
+    carregarProdutos()
+  }
+
+  const handleEditar = (produto: Produto) => {
+    setProdutoEditando(produto)
+    setMostrarForm(true)
+  }
+
   if (loading) return <p className="p-4">Carregando...</p>
 
   return (
     <div className="p-6">
+      {mostrarForm && (
+        <ProdutoForm
+          produto={produtoEditando}
+          onSalvar={handleSalvar}
+          onCancelar={() => {
+            setMostrarForm(false)
+            setProdutoEditando(undefined)
+          }}
+        />
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Produtos</h1>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button
+          onClick={() => setMostrarForm(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
           + Novo Produto
         </button>
       </div>
@@ -74,12 +102,16 @@ export default function Produtos() {
                 )}
               </td>
               <td className="p-3 border-b flex gap-2">
-                <button className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 text-sm">
+                <button
+                  onClick={() => handleEditar(produto)}
+                  className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 text-sm"
+                >
                   Editar
                 </button>
                 <button
                   onClick={() => handleDeletar(produto.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+                >
                   Deletar
                 </button>
               </td>
