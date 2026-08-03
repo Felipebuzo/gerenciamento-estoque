@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
 import Produtos from './pages/Produtos'
 import Movimentacoes from './pages/Movimentacoes'
 
@@ -21,14 +22,16 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-100">
-        <nav className="bg-blue-700 text-white p-4 shadow flex items-center gap-6">
+        <nav className="bg-blue-700 text-white p-4 shadow flex items-center gap-4">
           <h1 className="text-xl font-bold mr-4">📦 Gerenciamento de Estoque</h1>
-          <NavLink to="/">Produtos</NavLink>
+          <NavLink to="/">Dashboard</NavLink>
+          <NavLink to="/produtos">Produtos</NavLink>
           <NavLink to="/movimentacoes">Movimentações</NavLink>
         </nav>
         <main>
           <Routes>
-            <Route path="/" element={<Produtos />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/produtos" element={<Produtos />} />
             <Route path="/movimentacoes" element={<Movimentacoes />} />
           </Routes>
         </main>
